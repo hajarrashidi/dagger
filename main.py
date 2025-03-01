@@ -159,7 +159,7 @@ class ConfigTool:
                 content = self.build_menu_content(apps, alias_set)
                 UI.draw_box(content, center_title=True, title_color=UI.Color.BLUE)
 
-                choice = UI.get_input(prompt="Enter your choice: ")
+                choice = UI.get_input(prompt="> ")
 
                 if choice == "q":
                     UI.show_message("Exiting Config Tool.", color=UI.Color.YELLOW)
