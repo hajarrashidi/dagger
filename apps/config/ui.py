@@ -1,6 +1,6 @@
+# ui.py
 from typing import List
 import os
-
 
 class UI:
     """Enhanced class for professional UI rendering and interactions."""
