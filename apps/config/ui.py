@@ -92,3 +92,11 @@ class UI:
     def show_error(cls, error_message: str) -> None:
         """Display a styled error message in a box."""
         cls.draw_box([f"Error: {error_message}"], text_color=cls.Color.RED, border_color=cls.Color.RED)
+    @classmethod
+    def pause(cls, message: str = "Press Enter to continue...", color: str = None) -> None:
+        """Pause execution until the user presses Enter."""
+        prompt_color = color if color is not None else cls.Color.YELLOW
+        try:
+            input(f"{prompt_color}{message}{cls.Color.RESET}")
+        except (EOFError, KeyboardInterrupt):
+            print()

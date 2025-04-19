@@ -24,11 +24,12 @@ class AppManager:
         if not os.path.exists(self.apps_dir):
             return []
         try:
-            all_dirs = [
-                d for d in os.listdir(self.apps_dir)
-                if os.path.isdir(os.path.join(self.apps_dir, d)) and d != "config"
-            ]
-            app_dirs = [d for d in all_dirs if d.startswith('[') and d.endswith(']')]
+            # List directories in apps_dir, excluding 'config'
+            all_dirs = [d for d in os.listdir(self.apps_dir)
+                        if os.path.isdir(os.path.join(self.apps_dir, d)) and d != "config"]
+            # Only consider directories with bracketed names and sort for consistency
+            app_dirs = sorted(d for d in all_dirs if d.startswith('[') and d.endswith(']'))
+            # Strip brackets
             return [d[1:-1] for d in app_dirs]
         except OSError as e:
             UI.show_error(f"Listing apps: {e}")
@@ -98,13 +99,11 @@ class AppManager:
             if result.stderr:
                 UI.show_error(f"Errors:\n{result.stderr}")
             UI.show_message(f"App '{app_name}' finished", color=UI.Color.GREEN)
-
-            # Add "press to continue" feature
-            input(f"{UI.Color.YELLOW}Press Enter to continue...{UI.Color.RESET}")
         except subprocess.SubprocessError as e:
             UI.show_error(f"Running app '{app_name}': {e}")
-            # Also add "press to continue" after error
-            input(f"{UI.Color.YELLOW}Press Enter to continue...{UI.Color.RESET}")
+        finally:
+            # Pause after execution or error
+            UI.pause()
 
     def create_sample_app(self, app_name: str) -> None:
         folder_name = f"[{app_name}]"

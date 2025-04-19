@@ -1,5 +1,7 @@
 import os
 import platform
+import sys
+from pathlib import Path
 from apps.config.ui import UI
 
 class ConfigManager:
@@ -52,13 +54,14 @@ class ConfigManager:
     def add_alias(cls) -> None:
         """Add the 'dagger' alias to the shell configuration file."""
         config_file = cls.get_shell_config_file()
-        script_path = os.path.abspath(__file__)
-        # Navigate up to the main.py file
-        script_path = os.path.dirname(os.path.dirname(os.path.dirname(script_path)))
-        script_path = os.path.join(script_path, "main.py")
-
-        alias_line = (f"function dagger {{ python3 '{script_path}' }}\n" if platform.system() == "Windows"
-                      else f"alias dagger='python3 {script_path}'\n")
+        # Determine path to the main script using pathlib
+        script_path = Path(__file__).resolve().parents[2] / "main.py"
+        # Use the current Python executable for the alias
+        if platform.system() == "Windows":
+            # PowerShell function alias
+            alias_line = f"function dagger {{ & '{sys.executable}' '{script_path}' }}\n"
+        else:
+            alias_line = f"alias dagger='{sys.executable} {script_path}'\n"
 
         if cls.is_alias_set(config_file):
             UI.show_message("Alias 'dagger' is already set.", color=UI.Color.YELLOW)
